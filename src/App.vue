@@ -23,12 +23,10 @@
 
 export default {
   name: 'app',
-  data() {
-    return {
-      signedIn: false,
-      profile: null
-    }
-  },
+  data: () => ({
+    signedIn: false,
+    profile: null
+  }),
   mounted: function() {
     var self = this;
     gapi.load('auth2', {
