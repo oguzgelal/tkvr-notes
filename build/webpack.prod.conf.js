@@ -89,14 +89,20 @@ var webpackConfig = merge(baseWebpackConfig, {
       name: 'manifest',
       chunks: ['vendor']
     }),
-    // copy custom static assets
+
     new CopyWebpackPlugin([
+      // copy custom static assets
       {
         from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
+      },
+      // copy _redirects file
+      {
+        from: path.resolve(__dirname, '../_redirects'),
+        to: config.build.assetsRoot
       }
-    ])
+    ]),
   ]
 })
 

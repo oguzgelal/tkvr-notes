@@ -21,6 +21,8 @@
 
 <script>
 
+import api from './api'
+
 export default {
   name: 'app',
   data: () => ({
@@ -42,8 +44,16 @@ export default {
     signIn() {
       var self = this;
       gapi.auth2.getAuthInstance().signIn().then(function(googleUser) {
-        self.signedIn = true;
-        self.profile = googleUser.getBasicProfile();
+        var token = googleUser.getAuthResponse().id_token;
+        api.login(token)
+          .then(res => {
+            console.log('verified', res);
+            self.signedIn = true;
+            self.profile = googleUser.getBasicProfile();
+          }).catch(err => {
+            alert('an error occured');
+            self.signOut();
+          })
       });
     },
     signOut() {
