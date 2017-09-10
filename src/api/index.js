@@ -1,5 +1,5 @@
-import Login from './login.js';
+import Verify from './auth/verify';
 
 export default {
-  login: Login
+  verify: Verify
 }

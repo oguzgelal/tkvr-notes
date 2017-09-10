@@ -1,15 +1,17 @@
 <template>
   <div id="app" style="text-align: center;">
 
-    <div v-if="!signedIn">
+    <div v-if="loading">loading...</div>
+
+    <div v-if="!loading && !signedIn">
       <a href="#" v-on:click="signIn">Sign In</a>
     </div>
 
-    <div v-if="signedIn">
-      <div>{{ profile.getId() }}</div>
-      <div>{{ profile.getName() }}</div>
-      <div><img v-bind:src="profile.getImageUrl()"></div>
-      <div>{{ profile.getEmail() }}</div>
+    <div v-if="!loading && signedIn">
+      <div>{{ profile.google_id }}</div>
+      <div>{{ profile.name }}</div>
+      <div><img v-bind:src="profile.picture"></div>
+      <div>{{ profile.email }}</div>
       <div>
         <a href="#" v-on:click="signOut">Sign out</a>
       </div>
@@ -21,54 +23,33 @@
 
 <script>
 
-import api from './api'
+import { mapState, mapActions } from 'vuex'
+import store from './store';
 
 export default {
   name: 'app',
-  data: () => ({
-    signedIn: false,
-    profile: null
-  }),
+  data() {
+    return {
+      loading: true
+    };
+  },
+  computed: {
+    ...mapState({
+      signedIn: state => state.auth.signedIn,
+      profile: state => state.auth.profile
+    })
+  },
   mounted: function() {
     var self = this;
-    gapi.load('auth2', {
-      callback: function() {
-        gapi.auth2.init().then(function() {
-          self.signedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
-          self.profile = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
-        });
-      }
+    store.dispatch('auth/isSignedIn').then(() => {
+      self.loading = false;
     });
   },
   methods: {
-    signIn() {
-      var self = this;
-      gapi.auth2.getAuthInstance().signIn().then(function(googleUser) {
-        var token = googleUser.getAuthResponse().id_token;
-        api.login(token)
-          .then(res => {
-            console.log('verified', res);
-            self.signedIn = true;
-            self.profile = googleUser.getBasicProfile();
-          }).catch(err => {
-            alert('an error occured');
-            self.signOut();
-          })
-      });
-    },
-    signOut() {
-      this.signedIn = false;
-      this.profile = null;
-      var auth2 = gapi.auth2.getAuthInstance();
-      auth2.signOut().then(function() {
-        console.log('User signed out.');
-      });
-    }
-  },
-  watch: {
-    signedIn: function(n, o) {
-      console.log('signed in changed');
-    }
+    ...mapActions('auth', [
+      'signIn',
+      'signOut'
+    ])
   }
 };
 </script>
