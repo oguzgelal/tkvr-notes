@@ -1,23 +1,32 @@
 <template>
-  <div id="app" style="text-align: center;">
+  <div id="app">
 
     <div v-if="loading">loading...</div>
 
-    <div v-if="!loading && !signedIn">
+    <!--
+          <div v-if="!loading && !signedIn">
+            <a href="#" v-on:click="signIn">Sign In</a>
+          </div>
+
+          <div v-if="!loading && signedIn">
+            <div>{{ profile.google_id }}</div>
+            <div>{{ profile.name }}</div>
+            <div><img v-bind:src="profile.picture"></div>
+            <div>{{ profile.email }}</div>
+            <div>
+              <a href="#" v-on:click="signOut">Sign out</a>
+            </div>
+          </div>
+          -->
+
+    <div v-if="!loading && !signedIn" class="dd-sign-in">
       <a href="#" v-on:click="signIn">Sign In</a>
     </div>
 
-    <div v-if="!loading && signedIn">
-      <div>{{ profile.google_id }}</div>
-      <div>{{ profile.name }}</div>
-      <div><img v-bind:src="profile.picture"></div>
-      <div>{{ profile.email }}</div>
-      <div>
-        <a href="#" v-on:click="signOut">Sign out</a>
-      </div>
-
+    <div v-if="!loading">
+      <router-view></router-view>
     </div>
-    <router-view></router-view>
+
   </div>
 </template>
 
@@ -55,16 +64,22 @@ export default {
 </script>
 
 <style>
-#app {
+html,
+body {
+  margin: 0;
+  padding: 0;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 
-.g-signin2 .abcRioButton {
-  margin: auto;
+.dd-sign-in {
+  position: fixed;
+  bottom: 50px;
+  left: 0;
+  width: 100%;
+  text-align: center;
 }
+
 </style>
