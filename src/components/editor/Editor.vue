@@ -1,6 +1,5 @@
 <template>
   <div class="dd-editor" id="dd-editor" contenteditable="true" v-on:keydown="kd()">
-    <h1>Editor is here</h1>
   </div>
 </template>
 
@@ -12,7 +11,6 @@ export default {
   methods: {
     kd() {
       var txt = document.getElementById('dd-editor').innerText;
-      console.log('text', txt);
       TextCompiler.compile(txt);
     }
   }
